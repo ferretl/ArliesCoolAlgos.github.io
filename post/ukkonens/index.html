@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  
+  <meta name="author" content="Arlie">
+
+  
+  
+  <meta name="description" content="A wonderful journey about Ukkonen&#39;s Algorithm">
+  
+
+  
+  <link rel="icon" href="https://ferretl.github.io/favicon.ico">
+
+  
+  
+  <meta name="keywords" content=" hugo  latex  theme ">
+  
+
+  
+  
+  
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'option'],
+        }
+  };
+</script>
+<script async defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script"></script>
+
+
+  
+
+  
+  <meta property="og:title" content="Ukkonens Algortihm" />
+<meta property="og:description" content="A wonderful journey about Ukkonen&#39;s Algorithm" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://ferretl.github.io/post/ukkonens/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-11-16T16:13:21+11:00" />
+<meta property="article:modified_time" content="2023-11-16T16:13:21+11:00" />
+
+
+
+  
+  <link rel="canonical" href="https://ferretl.github.io/post/ukkonens/">
+
+  
+  
+  <meta itemprop="name" content="Ukkonens Algortihm">
+<meta itemprop="description" content="A wonderful journey about Ukkonen&#39;s Algorithm"><meta itemprop="datePublished" content="2023-11-16T16:13:21+11:00" />
+<meta itemprop="dateModified" content="2023-11-16T16:13:21+11:00" />
+<meta itemprop="wordCount" content="413">
+<meta itemprop="keywords" content="" />
+
+  
+  <link media="screen" rel="stylesheet" href='https://ferretl.github.io/css/common.css'>
+  <link media="screen" rel="stylesheet" href='https://ferretl.github.io/css/content.css'>
+
+  
+  
+  <title>Ukkonens Algortihm - Arlie&#39;s Cool Algorithms!</title>
+  
+
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ukkonens Algortihm"/>
+<meta name="twitter:description" content="A wonderful journey about Ukkonen&#39;s Algorithm"/>
+
+
+  
+<link rel="stylesheet" href='https://ferretl.github.io/css/single.css'>
+
+</head>
+
+<body>
+  <div id="wrapper">
+    <header id="header">
+  <h1>
+    <a href="https://ferretl.github.io/">Arlie&#39;s Cool Algorithms!</a>
+  </h1>
+
+  <nav>
+    
+    <span class="nav-bar-item">
+      <a class="link" href=""></a>
+    </span>
+    
+  </nav>
+</header>
+
+    
+<main id="main" class="post">
+  
+  
+  <h1>Ukkonens Algortihm</h1>
+  
+  
+  <article class="content">
+    
+    <h3 id="prerequisite-knowledge">Prerequisite knowledge</h3>
+<ul>
+<li><a href="https://external.ink?to=/en.wikipedia.org/wiki/Suffix_tree">Suffix Trees</a></li>
+</ul>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#a-brief-introduction">A Brief Introduction</a></li>
+<li><a href="#building-the-algorithm-from-the-ground-up">Building the Algorithm From the Ground Up</a>
+<ul>
+<li><a href="#the-core-of-ukkonens">The core of Ukkonen&rsquo;s</a>
+<ul>
+<li><a href="#implicit-suffix-trees">Implicit Suffix Trees</a></li>
+<li><a href="#phases-and-extensions">Phases and Extensions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="a-brief-introduction">A Brief Introduction</h1>
+<p>In your undergrad, you might have learned of <strong>Suffix Trees</strong>, an incredibly powerful data structure that can solve a plethora of problems relating to strings incredibly quickly. However as powerful as they may be, they were effectively useless as it would take $\mathcal{O}(n^2)$ time to build said tree via naively traversing each suffix of the string. Enter Ukkonen&rsquo;s Algorithm, a linear-time and <em>online</em> algorithm for suffix tree construction that, unlike previous linear-time algorithms, is much easier to comprehend.</p>
+<h1 id="building-the-algorithm-from-the-ground-up">Building the Algorithm From the Ground Up</h1>
+<p>Ukkonen&rsquo;s Algorithm is comprised of two components, the first being the core functionality of how we build our suffix tree, and the second is some tricks that are simply amazing and what give Ukkonen&rsquo;s its $\mathcal{O}(n)$ time complexity!</p>
+<h2 id="the-core-of-ukkonens">The core of Ukkonen&rsquo;s</h2>
+<p>In this section, we will explore the first part of Ukkonen&rsquo;s which is the core functionality of the algorithm.</p>
+<h3 id="implicit-suffix-trees">Implicit Suffix Trees</h3>
+<p>The first thing Ukkonen&rsquo;s Algorithm utilizes is <em>implicit suffix trees</em>. We define implicit suffix trees as so:</p>
+<blockquote>
+<p>A suffix tree for a given string <code>S$</code> is the suffix tree of simply string <code>S</code>,i.e. we create a suffix tree without the null terminating character <code>$</code>.</p>
+</blockquote>
+<p>For example here is the <strong>suffix tree</strong> of the string <code>abac</code> <br>
+<img src="images/suffix_tree_of_abac.png" alt="Suffix Tree of abac">
+And here is the <strong>implicit suffix tree</strong> <br>
+<img src="images/implicit_suffix_tree_of_abac.png" alt="Implicit Suffix Tree of abac"></p>
+<p>But why on earth are implicit suffix trees useful? Well, Ukkonens essentially builds implicit suffix trees each iteration, each one building off the other.</p>
+<h3 id="phases-and-extensions">Phases and Extensions</h3>
+<p>Phases and Extensions are how we handle updating the implicit suffix tree for each extension. In general, the goal of Ukkonen&rsquo;s Algorithm is to build the suffix tree for <code>S</code> by first constructing the corresponding <strong>implicit</strong> suffix tree. We do this by iterating of $n$ <em>phases</em>, where for each phase $i+1$ (where $1 \leqslant i + 1 \leqslant n$) the <strong>implicit</strong> suffix tree denoted $\mathcal{I}_{i+1}$ for the <strong>prefix</strong> <code>S[1...i+1]</code> is built. But how do we build it? Well, we do so in <em>extensions</em>. Extension $j$ of phase $i+1$ (where $1 \leqslant j \leqslant i+1$) will add the <strong>substring</strong> <code>S[j...i+1]</code> into the tree. We do this as follows</p>
+<ul>
+<li>Traverse the path for the substring <code>S[j...i]</code> within the current tree. This path is <strong>guaranteed</strong> to exist since $\mathcal{I}_i$ is already built.</li>
+<li><em>Extend</em> this path by appending the character <code>S[i+1]</code> hence creating the path for the string <code>S[j...i+1]</code></li>
+</ul>
+
+    
+  </article>
+  <div class="paginator">
+    
+    <a></a>
+    
+    
+    <a></a>
+    
+  </div>
+  <div class="comment">
+    
+    
+    
+    
+    
+    
+  </div>
+  
+</main>
+
+    <footer id="footer">
+  <div>
+    <span>© 2019</span> - <span>2023</span>
+  </div>
+
+  <div>
+    <span>Powered by </span>
+    <a class="link" href="https://gohugo.io/">Hugo</a>
+    <span> 🍦 Theme </span>
+    <a class="link" href="https://github.com/queensferryme/hugo-theme-texify">TeXify</a>
+  </div>
+
+  <div class="footnote">
+    <span>Follow me on <a class=link href=https://github.com/ferretl>GitHub</a>,
+<a class=link href=https://twitter.com/Arlie_90>Twitter</a> or
+<a class=link href=/index.xml>RSS</a> |
+<a class=link href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh target=_blank rel=noopener>CC BY-NC-SA 4.0</a>
+</span>
+  </div>
+</footer>
+
+  </div>
+
+  
+  
+
+  
+  
+
+  
+  
+
+</body>
+
+</html>
